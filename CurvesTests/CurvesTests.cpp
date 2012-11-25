@@ -78,18 +78,6 @@ bool check(TInput input, TOutput expectedOutput, ParamCurve<TInput, TOutput, tes
 	return result;
 }
 
-////bool check(float input, float expectedOutput, float output) {
-////	bool result = almostEqual<float>(expectedOutput, output);
-////	if (result) {
-////		printf("Success: getValue(%f) -> %f == %f\n", input, output, expectedOutput);
-////	}
-////	else {
-////		printf("Failure: getValue(%f) -> %f != %f\n", input, output, expectedOutput);
-////	}
-////
-////	return result;
-////}
-
 void testLinear() {
 	ParamCurve<float, float, testsSize> curve;
 	float inputs[5] = { 0.f, .5f, 1.5f, 2.f, 5.f };
@@ -214,11 +202,10 @@ public:
 	CompClass operator* (const CompClass &c2) const { return CompClass( value * c2.value ); }
 	CompClass operator/ (const CompClass &c2) const { return CompClass( value / c2.value ); }
 
-	CompClass operator* (const float &c2) const { return CompClass( value * c2 ); }
-	CompClass operator/ (const float &c2) const { return CompClass( value / c2 ); }
+	CompClass operator* (const float &f) const { return CompClass( value * f ); }
+	CompClass operator/ (const float &f) const { return CompClass( value / f ); }
 
 	operator float() { return value; }
-	CompClass operator* (const float f) const { return CompClass( value * f ); }
 };
 
 void testCompClassClamp() {

@@ -27,7 +27,7 @@ SOFTWARE.
 template<typename TInput, typename TOutput>
 class ClampInterpolator : public Interpolator<TInput, TOutput> {
 public:
-	ClampInterpolator() : Interpolator() { interpolation = interpolationClamp; }
+	ClampInterpolator() : Interpolator<TInput, TOutput>() { this->interpolation = interpolationClamp; }
 
 	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t index) {
 		return outputs[index];

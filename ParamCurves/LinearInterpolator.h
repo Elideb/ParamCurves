@@ -27,7 +27,7 @@ SOFTWARE.
 template<typename TInput, typename TOutput>
 class LinearInterpolator : public Interpolator<TInput, TOutput> {
 public:
-	LinearInterpolator() : Interpolator() { interpolation = interpolationLinear; }
+	LinearInterpolator() : Interpolator<TInput, TOutput>() { this->interpolation = interpolationLinear; }
 
 	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t index) {
 		float ratio = (input - inputs[index]) / (inputs[index+1] - inputs[index]);

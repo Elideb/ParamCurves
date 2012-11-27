@@ -1,3 +1,7 @@
+///
+/// @file CurvesTests.cpp Tests for ParamCurves.
+/// @author Enrique Juan Gil Izquierdo
+///
 /**
 Copyright (c) 2012 Enrique Juan Gil Izquierdo
 

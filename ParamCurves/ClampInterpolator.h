@@ -1,3 +1,7 @@
+///
+/// @file ClampInterpolator.h Implementation of a basic clamp interpolator.
+/// @author Enrique Juan Gil Izquierdo
+///
 /**
 Copyright (c) 2012 Enrique Juan Gil Izquierdo
 
@@ -24,12 +28,20 @@ SOFTWARE.
 
 #include "Interpolator.h"
 
+///
+/// Returns the value of the outputs position corresponding to inputs value
+/// immediately lower than input.
+/// @tparam TInput Input values type. No required operators.
+/// @tparam TOutput Output values type. No required operators.
+///
 template<typename TInput, typename TOutput>
 class ClampInterpolator : public Interpolator<TInput, TOutput> {
 public:
 	ClampInterpolator() : Interpolator<TInput, TOutput>() { this->interpolation = interpolationClamp; }
 
-	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t index) {
+	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size, size_t index) {
+		if (index >= size) return outputs[size-1];
+
 		return outputs[index];
 	}
 };

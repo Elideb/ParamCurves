@@ -1,3 +1,7 @@
+///
+/// @file Interpolator.h Abstract definition of an interpolator.
+/// @author Enrique Juan Gil Izquierdo
+///
 /**
 Copyright (c) 2012 Enrique Juan Gil Izquierdo
 
@@ -30,6 +34,11 @@ enum t_interpolationMode {
 	// , interpolationClampHigher
 };
 
+///
+/// Abstract implementation of an interpolator.
+/// @tparam TInput Input values type.
+/// @tparam TOutput Output values type.
+///
 template<typename TInput, typename TOutput>
 class Interpolator {
 
@@ -41,5 +50,5 @@ public:
 
 	t_interpolationMode getInterpolationMode() { return interpolation; }
 
-	virtual TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t index) = 0;
+	virtual TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size, size_t index) = 0;
 };

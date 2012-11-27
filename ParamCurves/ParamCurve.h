@@ -1,3 +1,7 @@
+///
+/// @file ParamCurve.h Implementation of a parameterized response curve.
+/// @author Enrique Juan Gil Izquierdo
+///
 /**
 Copyright (c) 2012 Enrique Juan Gil Izquierdo
 
@@ -24,6 +28,16 @@ SOFTWARE.
 
 #include "Interpolator.h"
 
+///
+/// Stores a parameterized curve and returns the output values corresponding
+/// to a specific input value.
+/// @tparam TInput Input values type. Required operators.
+/// TInput operator<=(TInput&)
+/// TInput operator<(TInput&)
+/// Other operators may be required, depending on chosen interpolator.
+/// @tparam TOutput Output values type. Requires only operators needed for
+/// the chosen interpolator.
+///
 template<typename TInput, typename TOutput, size_t maxSize>
 class ParamCurve {
 	Interpolator<TInput, TOutput>* interpolator;
@@ -50,11 +64,11 @@ public:
 	TOutput getValue(TInput input) const {
 		if(length == 0) return 0;
 		if (input <= inputs[0]) return outputs[0];
-		if (input >= inputs[length-1]) return outputs[length-1];
+		if (inputs[length-1] <= input) return outputs[length-1];
 
 		for(size_t i = 0; i < length; ++i) {
 			if (inputs[i] <= input && input < inputs[i+1]) {
-				return interpolator->interpolate(input, inputs, outputs, i);
+				return interpolator->interpolate(input, inputs, outputs, length, i);
 			}
 		}
 

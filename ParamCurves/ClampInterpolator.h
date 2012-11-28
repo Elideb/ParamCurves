@@ -31,7 +31,9 @@ SOFTWARE.
 ///
 /// Returns the value of the outputs position corresponding to inputs value
 /// immediately lower than input.
-/// @tparam TInput Input values type. No required operators.
+/// @tparam TInput Input values type. Required operators:
+/// TInput operator<=(TInput&)
+/// TInput operator<(TInput&)
 /// @tparam TOutput Output values type. No required operators.
 ///
 template<typename TInput, typename TOutput>
@@ -44,10 +46,18 @@ public:
 		return &instance;
 	}
 
-	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size, size_t index) {
-		if (index < 0) return outputs[0];
-		if (index >= size) return outputs[size-1];
+	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size) {
+		if (size == 0) return 0;
+		if (input <= inputs[0]) return outputs[0];
+		if (inputs[size-1] <= input) return outputs[size-1];
 
-		return outputs[index];
+		for(size_t i = 0; i < size; ++i) {
+			if (inputs[i] <= input && input < inputs[i+1]) {
+				return outputs[i];
+			}
+		}
+
+		// Only reachable with malformed inputs
+		return outputs[size-1];
 	}
 };

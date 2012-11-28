@@ -1,5 +1,5 @@
 ///
-/// @file ClampUpInterpolator.h Implementation of a basic clamp interpolator.
+/// @file CatmullRomInterpolator.h Implementation of a linear interpolator.
 /// @author Enrique Juan Gil Izquierdo
 ///
 /**
@@ -29,31 +29,43 @@ SOFTWARE.
 #include "Interpolator.h"
 
 ///
-/// Returns the value of the outputs position corresponding to inputs value
-/// immediately higher than input.
+/// Interpolates smoothly between two values, using as first value inputs[index] received.
+/// It requires two points to interpolate between, plus two control points to ensure smoothness.
 /// @tparam TInput Input values type. Required operators:
 /// TInput operator<=(TInput&)
 /// TInput operator<(TInput&)
-/// @tparam TOutput Output values type. No required operators.
+/// TInput operator-(TInput&)
+/// TInput operator/(TInput&)
+/// @tparam TOutput Output values type. Required operators:
+/// TOutput operator*(float&)
 ///
 template<typename TInput, typename TOutput>
-class ClampUpInterpolator : public Interpolator<TInput, TOutput> {
-	ClampUpInterpolator() : Interpolator<TInput, TOutput>() { this->interpolation = interpolationClampUp; }
+class CatmullRomInterpolator : public Interpolator<TInput, TOutput> {
+	CatmullRomInterpolator() : Interpolator<TInput, TOutput>() { this->interpolation = interpolationCatmullRom; }
 
 public:
 	static Interpolator<TInput, TOutput>* getInstance() {
-		static ClampUpInterpolator<TInput, TOutput> instance;
+		static CatmullRomInterpolator<TInput, TOutput> instance;
 		return &instance;
 	}
 
 	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size) {
 		if (size == 0) return 0;
 		if (input <= inputs[0]) return outputs[0];
-		if (inputs[size-2] <= input) return outputs[size-1];
+		if (inputs[size-1] <= input) return outputs[size-1];
 
 		for(size_t i = 0; i < size; ++i) {
 			if (inputs[i] <= input && input < inputs[i+1]) {
-				return outputs[i + 1];
+				TOutput c1 = (i > 0) ? outputs[i-1] : outputs[i];
+				TOutput v1 = outputs[i];
+				TOutput v2 = (i < size - 1) ? outputs[i+1] : outputs[size-1];
+				TOutput c2 = (i < size - 2) ? outputs[i+2] : outputs[size-1];
+
+				float ratio = (input - inputs[i]) / (inputs[i+1] - inputs[i]);
+				return c1 * ((-ratio + 2.f) * ratio - 1.f) * ratio * .5f
+					+ v1 * (((3.f * ratio - 5.f) * ratio) * ratio + 2.f) * .5f
+					+ v2 * ((-3.f * ratio + 4.f) * ratio + 1.f) * ratio * .5f
+					+ c2 * ((ratio - 1.f) * ratio * ratio) * .5f;
 			}
 		}
 

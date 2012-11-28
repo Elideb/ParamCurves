@@ -51,5 +51,5 @@ protected:
 public:
 	t_interpolationMode getInterpolationMode() { return interpolation; }
 
-	virtual TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size, size_t index) = 0;
+	virtual TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size) = 0;
 };

@@ -62,16 +62,6 @@ public:
 	}
 
 	TOutput getValue(TInput input) const {
-		if(length == 0) return 0;
-		if (input <= inputs[0]) return outputs[0];
-		if (inputs[length-1] <= input) return outputs[length-1];
-
-		for(size_t i = 0; i < length; ++i) {
-			if (inputs[i] <= input && input < inputs[i+1]) {
-				return interpolator->interpolate(input, inputs, outputs, length, i);
-			}
-		}
-
-		return outputs[length-1];
+		return interpolator->interpolate(input, inputs, outputs, length);
 	}
 };

@@ -31,6 +31,8 @@ SOFTWARE.
 ///
 /// Interpolates linearly between two values, using as first value inputs[index] received.
 /// @tparam TInput Input values type. Required operators:
+/// TInput operator<=(TInput&)
+/// TInput operator<(TInput&)
 /// TInput operator-(TInput&)
 /// TInput operator/(TInput&)
 /// @tparam TOutput Output values type. Required operators:
@@ -48,11 +50,19 @@ public:
 		return &instance;
 	}
 
-	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size, size_t index) {
-		if (index < 0) return outputs[0];
-		if (index + 1 >= size) return outputs[size-1];
+	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size) {
+		if (size == 0) return 0;
+		if (input <= inputs[0]) return outputs[0];
+		if (inputs[size-1] <= input) return outputs[size-1];
 
-		float ratio = (input - inputs[index]) / (inputs[index+1] - inputs[index]);
-		return outputs[index] + ((outputs[index+1] - outputs[index]) * ratio);
+		for(size_t i = 0; i < size; ++i) {
+			if (inputs[i] <= input && input < inputs[i+1]) {
+				float ratio = (input - inputs[i]) / (inputs[i+1] - inputs[i]);
+				return outputs[i] + ((outputs[i+1] - outputs[i]) * ratio);
+			}
+		}
+
+		// Only reachable with malformed inputs
+		return outputs[size-1];
 	}
 };

@@ -30,7 +30,7 @@ SOFTWARE.
 #include "../ParamCurves/LinearInterpolator.h"
 #include "../ParamCurves/ClampInterpolator.h"
 #include "../ParamCurves/ClampUpInterpolator.h"
-////#include "../ParamCurves/CatmullRomInterpolator.h"
+#include "../ParamCurves/CatmullRomInterpolator.h"
 
 void testLinear();
 void testClamp();
@@ -39,7 +39,7 @@ void testCompNonDivLinear();
 void testCompClassClamp();
 void testCompClassClampUp();
 void testCompClassLinear();
-////void testCatmullRom();
+void testCatmullRom();
 
 const size_t testsSize = 5;
 
@@ -62,8 +62,8 @@ int main(int argc, char* argv[])
 	printf("\nTesting div linear interpolation:\n");
 	testCompClassLinear();
 
-	////printf("\nTesting Catmull-Rom interpolation:\n");
-	////testCatmullRom();
+	printf("\nTesting Catmull-Rom interpolation:\n");
+	testCatmullRom();
 
 	return 0;
 }
@@ -282,55 +282,55 @@ void testCompClassLinear() {
 	check<CompClass, float>(4.01f,	16.f,	&curve);
 }
 
-////class CatmullRomClass {
-////public:
-////	float value;
-////
-////	CatmullRomClass() { value = 0.f; }
-////	CatmullRomClass(float newValue) { value = newValue; }
-////
-////	bool operator== (const CatmullRomClass &c2) const { return value == c2.value; }
-////	bool operator< (const CatmullRomClass &c2) const { return value < c2.value; }
-////	bool operator> (const CatmullRomClass &c2) const { return value > c2.value; }
-////	bool operator<= (const CatmullRomClass &c2) const { return value <= c2.value; }
-////	bool operator>= (const CatmullRomClass &c2) const { return value >= c2.value; }
-////
-////	// All this return a copy of the resulting CatmullRomClass.
-////	CatmullRomClass operator+ (const CatmullRomClass &c2) const { return CatmullRomClass( value + c2.value ); }
-////	CatmullRomClass operator- (const CatmullRomClass &c2) const { return CatmullRomClass( value - c2.value ); }
-////	CatmullRomClass operator* (const CatmullRomClass &c2) const { return CatmullRomClass( value * c2.value ); }
-////	CatmullRomClass operator/ (const CatmullRomClass &c2) const { return CatmullRomClass( value / c2.value ); }
-////
-////	CatmullRomClass operator* (const float &f) const { return CatmullRomClass( value * f ); }
-////	CatmullRomClass operator/ (const float &f) const { return CatmullRomClass( value / f ); }
-////	CatmullRomClass operator+ (const float &f) const { return CatmullRomClass( value + f ); }
-////	CatmullRomClass operator- (const float &f) const { return CatmullRomClass( value - f ); }
-////
-////	operator float() { return value; }
-////};
-////
-////void testCatmullRom() {
-////	ParamCurve<float, CatmullRomClass, testsSize> curve;
-////	
-////	float inputs[5] = { 0.f, 1.f, 2.f, 3.f, 4.f };
-////	CatmullRomClass outputs[5] = { CatmullRomClass(0.f), CatmullRomClass(1.f), CatmullRomClass(4.f), CatmullRomClass(9.f), CatmullRomClass(16.f) };
-////	Interpolator<float, CatmullRomClass>* interpolator = CatmullRomInterpolator<float, CatmullRomClass>::getInstance();
-////	curve.initialize(interpolator, 5, inputs, outputs);
-////	
-////	bool first = true;
-////	for(float i = inputs[0]; i <= inputs[4]; i += .5f) {
-////		if (first) first = false;
-////		else printf(", ");
-////		printf (" %f", i);
-////	}
-////
-////	printf("\n");
-////	first = true;
-////	for(float i = inputs[0]; i <= inputs[4]; i += .5f) {
-////		if (first) first = false;
-////		else printf(", ");
-////		printf (" %f", curve.getValue(i));
-////	}
-////
-////	printf("\n");
-////}
+class CatmullRomClass {
+public:
+	float value;
+
+	CatmullRomClass() { value = 0.f; }
+	CatmullRomClass(float newValue) { value = newValue; }
+
+	bool operator== (const CatmullRomClass &c2) const { return value == c2.value; }
+	bool operator< (const CatmullRomClass &c2) const { return value < c2.value; }
+	bool operator> (const CatmullRomClass &c2) const { return value > c2.value; }
+	bool operator<= (const CatmullRomClass &c2) const { return value <= c2.value; }
+	bool operator>= (const CatmullRomClass &c2) const { return value >= c2.value; }
+
+	// All this return a copy of the resulting CatmullRomClass.
+	CatmullRomClass operator+ (const CatmullRomClass &c2) const { return CatmullRomClass( value + c2.value ); }
+	CatmullRomClass operator- (const CatmullRomClass &c2) const { return CatmullRomClass( value - c2.value ); }
+	CatmullRomClass operator* (const CatmullRomClass &c2) const { return CatmullRomClass( value * c2.value ); }
+	CatmullRomClass operator/ (const CatmullRomClass &c2) const { return CatmullRomClass( value / c2.value ); }
+
+	CatmullRomClass operator* (const float &f) const { return CatmullRomClass( value * f ); }
+	CatmullRomClass operator/ (const float &f) const { return CatmullRomClass( value / f ); }
+	CatmullRomClass operator+ (const float &f) const { return CatmullRomClass( value + f ); }
+	CatmullRomClass operator- (const float &f) const { return CatmullRomClass( value - f ); }
+
+	operator float() { return value; }
+};
+
+void testCatmullRom() {
+	ParamCurve<float, CatmullRomClass, testsSize> curve;
+	
+	float inputs[5] = { 0.f, 1.f, 2.f, 3.f, 4.f };
+	CatmullRomClass outputs[5] = { CatmullRomClass(0.f), CatmullRomClass(1.f), CatmullRomClass(4.f), CatmullRomClass(9.f), CatmullRomClass(16.f) };
+	Interpolator<float, CatmullRomClass>* interpolator = CatmullRomInterpolator<float, CatmullRomClass>::getInstance();
+	curve.initialize(interpolator, 5, inputs, outputs);
+	
+	bool first = true;
+	for(float i = inputs[0]; i <= inputs[4]; i += .5f) {
+		if (first) first = false;
+		else printf(", ");
+		printf (" %f", i);
+	}
+
+	printf("\n");
+	first = true;
+	for(float i = inputs[0]; i <= inputs[4]; i += .5f) {
+		if (first) first = false;
+		else printf(", ");
+		printf (" %f", curve.getValue(i));
+	}
+
+	printf("\n");
+}

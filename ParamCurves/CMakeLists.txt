@@ -8,6 +8,7 @@ SET(curves_HDRS
 	ParamCurve.h
 	Interpolator.h
 	ClampInterpolator.h
+    ClampUpInterpolator.h
     LinearInterpolator.h
 )
 

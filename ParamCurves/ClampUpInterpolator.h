@@ -1,5 +1,5 @@
 ///
-/// @file Interpolator.h Abstract definition of an interpolator.
+/// @file ClampUpInterpolator.h Implementation of a basic clamp interpolator.
 /// @author Enrique Juan Gil Izquierdo
 ///
 /**
@@ -26,30 +26,28 @@ SOFTWARE.
 
 #pragma once
 
-enum t_interpolationMode {
-	interpolationClamp
-	, interpolationClampUp
-	, interpolationLinear
-	, interpolationCatmullRom
-	, interpolationSmooth = interpolationCatmullRom
-};
+#include "Interpolator.h"
 
 ///
-/// Abstract implementation of an interpolator.
-/// @tparam TInput Input values type.
-/// @tparam TOutput Output values type.
+/// Returns the value of the outputs position corresponding to inputs value
+/// immediately higher than input.
+/// @tparam TInput Input values type. No required operators.
+/// @tparam TOutput Output values type. No required operators.
 ///
 template<typename TInput, typename TOutput>
-class Interpolator {
-
-protected:
-	t_interpolationMode interpolation;
-
-protected:
-	Interpolator() {}
+class ClampUpInterpolator : public Interpolator<TInput, TOutput> {
+	ClampUpInterpolator() : Interpolator<TInput, TOutput>() { this->interpolation = interpolationClampUp; }
 
 public:
-	t_interpolationMode getInterpolationMode() { return interpolation; }
+	static Interpolator<TInput, TOutput>* getInstance() {
+		static ClampUpInterpolator<TInput, TOutput> instance;
+		return &instance;
+	}
 
-	virtual TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size, size_t index) = 0;
+	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size, size_t index) {
+		if (index < 0) return outputs[0];
+		if (index + 1 >= size) return outputs[size-1];
+
+		return outputs[index + 1];
+	}
 };

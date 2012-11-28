@@ -34,16 +34,22 @@ SOFTWARE.
 /// TInput operator-(TInput&)
 /// TInput operator/(TInput&)
 /// @tparam TOutput Output values type. Required operators:
-/// TOuput operator-(TOutput&)
+/// TOuput operator+(TOutput&)
 /// TOuput operator-(TOutput&)
 /// TOutput operator*(float&).
 ///
 template<typename TInput, typename TOutput>
 class LinearInterpolator : public Interpolator<TInput, TOutput> {
-public:
 	LinearInterpolator() : Interpolator<TInput, TOutput>() { this->interpolation = interpolationLinear; }
 
+public:
+	static Interpolator<TInput, TOutput>* getInstance() {
+		static LinearInterpolator<TInput, TOutput> instance;
+		return &instance;
+	}
+
 	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size, size_t index) {
+		if (index < 0) return outputs[0];
 		if (index + 1 >= size) return outputs[size-1];
 
 		float ratio = (input - inputs[index]) / (inputs[index+1] - inputs[index]);

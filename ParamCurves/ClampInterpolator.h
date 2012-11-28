@@ -36,10 +36,16 @@ SOFTWARE.
 ///
 template<typename TInput, typename TOutput>
 class ClampInterpolator : public Interpolator<TInput, TOutput> {
-public:
 	ClampInterpolator() : Interpolator<TInput, TOutput>() { this->interpolation = interpolationClamp; }
 
+public:
+	static Interpolator<TInput, TOutput>* getInstance() {
+		static ClampInterpolator<TInput, TOutput> instance;
+		return &instance;
+	}
+
 	TOutput interpolate(TInput input, TInput const *inputs, TOutput const *outputs, size_t size, size_t index) {
+		if (index < 0) return outputs[0];
 		if (index >= size) return outputs[size-1];
 
 		return outputs[index];

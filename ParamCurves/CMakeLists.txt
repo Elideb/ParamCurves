@@ -10,6 +10,7 @@ SET(curves_HDRS
 	ClampInterpolator.h
     ClampUpInterpolator.h
     LinearInterpolator.h
+    CatmullRomInterpolator.h
 )
 
 ADD_LIBRARY(ParamCurves ${curves_SRCS} ${curves_HDRS})

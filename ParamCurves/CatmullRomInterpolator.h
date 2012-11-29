@@ -56,16 +56,26 @@ public:
 
 		for(size_t i = 0; i < size; ++i) {
 			if (inputs[i] <= input && input < inputs[i+1]) {
+				// First control point
 				TOutput c1 = (i > 0) ? outputs[i-1] : outputs[i];
+				// First point
 				TOutput v1 = outputs[i];
+				// Second point
 				TOutput v2 = (i < size - 1) ? outputs[i+1] : outputs[size-1];
+				// Second control point
 				TOutput c2 = (i < size - 2) ? outputs[i+2] : outputs[size-1];
 
 				float ratio = (input - inputs[i]) / (inputs[i+1] - inputs[i]);
-				return c1 * ((-ratio + 2.f) * ratio - 1.f) * ratio * .5f
-					+ v1 * (((3.f * ratio - 5.f) * ratio) * ratio + 2.f) * .5f
-					+ v2 * ((-3.f * ratio + 4.f) * ratio + 1.f) * ratio * .5f
-					+ c2 * ((ratio - 1.f) * ratio * ratio) * .5f;
+				return .5f * ((2.f * v1)
+					+ (v2 - c1) * ratio
+					+ (2.f * c1 - 5.f * v1 + 4.f * v2 - c2) * ratio * ratio
+					+ (3.f * v1 - c1 - 3.f * v2 + c2) * ratio * ratio * ratio);
+
+
+				////return c1 * ((-ratio + 2.f) * ratio - 1.f) * ratio * .5f
+				////	+ v1 * (((3.f * ratio - 5.f) * ratio) * ratio + 2.f) * .5f
+				////	+ v2 * ((-3.f * ratio + 4.f) * ratio + 1.f) * ratio * .5f
+				////	+ c2 * ((ratio - 1.f) * ratio * ratio) * .5f;
 			}
 		}
 

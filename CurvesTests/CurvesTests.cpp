@@ -39,6 +39,7 @@ void testCompNonDivLinear();
 void testCompClassClamp();
 void testCompClassClampUp();
 void testCompClassLinear();
+void testCatmullRomFloat();
 void testCatmullRom();
 
 const size_t testsSize = 5;
@@ -63,6 +64,7 @@ int main(int argc, char* argv[])
 	testCompClassLinear();
 
 	printf("\nTesting Catmull-Rom interpolation:\n");
+	testCatmullRomFloat();
 	testCatmullRom();
 
 	return 0;
@@ -76,8 +78,8 @@ bool almostEqual(T v1, T v2) {
 		return v1 - v2 < .0001;
 }
 
-template<typename TInput, typename TOutput>
-bool check(TInput input, TOutput expectedOutput, ParamCurve<TInput, TOutput, testsSize>* const curve) {
+template<typename TInput, typename TOutput, size_t curveSize>
+bool check(TInput input, TOutput expectedOutput, ParamCurve<TInput, TOutput, curveSize>* const curve) {
 	TOutput output = curve->getValue(input);
 
 	bool result = almostEqual<float>(expectedOutput, output);
@@ -93,47 +95,47 @@ bool check(TInput input, TOutput expectedOutput, ParamCurve<TInput, TOutput, tes
 
 void testLinear() {
 	ParamCurve<float, float, testsSize> curve;
-	float inputs[5] = { 0.f, .5f, 1.5f, 2.f, 5.f };
-	float outputs[5] = { 4.f, 3.f, 4.f, 5.f, 5.f };
+	float inputs[testsSize] = { 0.f, .5f, 1.5f, 2.f, 5.f };
+	float outputs[testsSize] = { 4.f, 3.f, 4.f, 5.f, 5.f };
 	Interpolator<float, float>* interpolator = LinearInterpolator<float, float>::getInstance();
-	curve.initialize(interpolator, 5, inputs, outputs);
+	curve.initialize(interpolator, testsSize, inputs, outputs);
 
-	check<float, float>(-1.f,	4.f,	&curve);
-	check<float, float>(0.f,	4.f,	&curve);
-	check<float, float>(0.000001f,	4.f,	&curve);
-	check<float, float>(.125f,	3.75f,	&curve);
-	check<float, float>(.25f,	3.5f,	&curve);
-	check<float, float>(.5f,	3.f,	&curve);
-	check<float, float>(1.f,	3.5f,	&curve);
-	check<float, float>(1.6f,	4.2f,	&curve);
-	check<float, float>(2.f,	5.f,	&curve);
-	check<float, float>(3.f,	5.f,	&curve);
-	check<float, float>(4.f,	5.f,	&curve);
-	check<float, float>(5.f,	5.f,	&curve);
-	check<float, float>(20.f,	5.f,	&curve);
-	check<float, float>(5.01f,	5.f,	&curve);
+	check<float, float, testsSize>(-1.f,		4.f,	&curve);
+	check<float, float, testsSize>(0.f,			4.f,	&curve);
+	check<float, float, testsSize>(0.000001f,	4.f,	&curve);
+	check<float, float, testsSize>(.125f,		3.75f,	&curve);
+	check<float, float, testsSize>(.25f,		3.5f,	&curve);
+	check<float, float, testsSize>(.5f,			3.f,	&curve);
+	check<float, float, testsSize>(1.f,			3.5f,	&curve);
+	check<float, float, testsSize>(1.6f,		4.2f,	&curve);
+	check<float, float, testsSize>(2.f,			5.f,	&curve);
+	check<float, float, testsSize>(3.f,			5.f,	&curve);
+	check<float, float, testsSize>(4.f,			5.f,	&curve);
+	check<float, float, testsSize>(5.f,			5.f,	&curve);
+	check<float, float, testsSize>(20.f,		5.f,	&curve);
+	check<float, float, testsSize>(5.01f,		5.f,	&curve);
 }
 
 void testClamp() {
 	ParamCurve<float, float, testsSize> curve;
-	float inputs[5] = { 0.f, .5f, 1.5f, 2.f, 5.f };
-	float outputs[5] = { 4.f, 3.f, 4.f, 5.f, 5.f };
+	float inputs[testsSize] = { 0.f, .5f, 1.5f, 2.f, 5.f };
+	float outputs[testsSize] = { 4.f, 3.f, 4.f, 5.f, 5.f };
 	Interpolator<float, float>* interpolator = ClampInterpolator<float, float>::getInstance();
-	curve.initialize( interpolator, 5, inputs, outputs );
+	curve.initialize( interpolator, testsSize, inputs, outputs );
 
-	check<float, float>(-1.f,	4.f,	&curve);
-	check<float, float>(0.f,	4.f,	&curve);
-	check<float, float>(.125f,	4.f,	&curve);
-	check<float, float>(.25f,	4.f,	&curve);
-	check<float, float>(.5f,	3.f,	&curve);
-	check<float, float>(1.f,	3.f,	&curve);
-	check<float, float>(1.6f,	4.f,	&curve);
-	check<float, float>(2.f,	5.f,	&curve);
-	check<float, float>(3.f,	5.f,	&curve);
-	check<float, float>(4.f,	5.f,	&curve);
-	check<float, float>(5.f,	5.f,	&curve);
-	check<float, float>(20.f,	5.f,	&curve);
-	check<float, float>(5.01f,	5.f,	&curve);
+	check<float, float, testsSize>(-1.f,	4.f,	&curve);
+	check<float, float, testsSize>(0.f,		4.f,	&curve);
+	check<float, float, testsSize>(.125f,	4.f,	&curve);
+	check<float, float, testsSize>(.25f,	4.f,	&curve);
+	check<float, float, testsSize>(.5f,		3.f,	&curve);
+	check<float, float, testsSize>(1.f,		3.f,	&curve);
+	check<float, float, testsSize>(1.6f,	4.f,	&curve);
+	check<float, float, testsSize>(2.f,		5.f,	&curve);
+	check<float, float, testsSize>(3.f,		5.f,	&curve);
+	check<float, float, testsSize>(4.f,		5.f,	&curve);
+	check<float, float, testsSize>(5.f,		5.f,	&curve);
+	check<float, float, testsSize>(20.f,	5.f,	&curve);
+	check<float, float, testsSize>(5.01f,	5.f,	&curve);
 }
 
 class CompNonDivClass {
@@ -155,37 +157,37 @@ public:
 void testCompNonDivClamp() {
 	// This should compile, because clamp only requires input to be comparable
 	ParamCurve<CompNonDivClass, float, testsSize> curve;
-	CompNonDivClass inputs[5] = { CompNonDivClass(0.f), CompNonDivClass(1.f), CompNonDivClass(2.f), CompNonDivClass(3.f), CompNonDivClass(4.f) };
-	float outputs[5] = { 4.f, 3.f, 4.f, 5.f, 5.f };
+	CompNonDivClass inputs[testsSize] = { CompNonDivClass(0.f), CompNonDivClass(1.f), CompNonDivClass(2.f), CompNonDivClass(3.f), CompNonDivClass(4.f) };
+	float outputs[testsSize] = { 4.f, 3.f, 4.f, 5.f, 5.f };
 	Interpolator<CompNonDivClass, float>* interpolator = ClampInterpolator<CompNonDivClass, float>::getInstance();
-	curve.initialize(interpolator, 5, inputs, outputs);
+	curve.initialize(interpolator, testsSize, inputs, outputs);
 	
-	check<CompNonDivClass, float>(-1.f,			4.f,	&curve);
-	check<CompNonDivClass, float>(0.f,			4.f,	&curve);
-	check<CompNonDivClass, float>(0.000001f,	4.f,	&curve);
-	check<CompNonDivClass, float>(.125f,		4.f,	&curve);
-	check<CompNonDivClass, float>(.25f,			4.f,	&curve);
-	check<CompNonDivClass, float>(.5f,			4.f,	&curve);
-	check<CompNonDivClass, float>(1.f,			3.f,	&curve);
-	check<CompNonDivClass, float>(1.6f,			3.f,	&curve);
-	check<CompNonDivClass, float>(2.f,			4.f,	&curve);
-	check<CompNonDivClass, float>(3.f,			5.f,	&curve);
-	check<CompNonDivClass, float>(4.f,			5.f,	&curve);
-	check<CompNonDivClass, float>(5.f,			5.f,	&curve);
-	check<CompNonDivClass, float>(20.f,			5.f,	&curve);
-	check<CompNonDivClass, float>(5.01f,		5.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(-1.f,			4.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(0.f,			4.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(0.000001f,		4.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(.125f,			4.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(.25f,			4.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(.5f,			4.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(1.f,			3.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(1.6f,			3.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(2.f,			4.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(3.f,			5.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(4.f,			5.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(5.f,			5.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(20.f,			5.f,	&curve);
+	check<CompNonDivClass, float, testsSize>(5.01f,			5.f,	&curve);
 }
 
 void testCompNonDivLinear() {
 	// This should fail to compile because linear interpolator requires Output to support operators +, -, *, / and float
 	////ParamCurve<float, CompNonDivClass, testsSize> curve;
 	////
-	////float inputs[5] = { 0.f, 1.f, 2.f, 3.f, 4.f };
-	////CompNonDivClass outputs[5] = { CompNonDivClass(0.f), CompNonDivClass(1.f), CompNonDivClass(2.f), CompNonDivClass(3.f), CompNonDivClass(4.f) };
+	////float inputs[testsSize] = { 0.f, 1.f, 2.f, 3.f, 4.f };
+	////CompNonDivClass outputs[testsSize] = { CompNonDivClass(0.f), CompNonDivClass(1.f), CompNonDivClass(2.f), CompNonDivClass(3.f), CompNonDivClass(4.f) };
 	////Interpolator<float, CompNonDivClass>* interpolator = LinearInterpolator<float, CompNonDivClass>::getInstance();
-	////curve.initialize(interpolator, 5, inputs, outputs);
+	////curve.initialize(interpolator, testsSize, inputs, outputs);
 	////
-	////check<float, CompNonDivClass>(.5f, .5f, &curve);
+	////check<float, CompNonDivClass, testsSize>(.5f, .5f, &curve);
 }
 
 class CompClass {
@@ -216,70 +218,70 @@ public:
 void testCompClassClamp() {
 	ParamCurve<CompClass, float, testsSize> curve;
 	
-	CompClass inputs[5] = { CompClass(0.f), CompClass(1.f), CompClass(2.f), CompClass(3.f), CompClass(4.f) };
-	float outputs[5] = { 0.f, 1.f, 4.f, 9.f, 16.f };
+	CompClass inputs[testsSize] = { CompClass(0.f), CompClass(1.f), CompClass(2.f), CompClass(3.f), CompClass(4.f) };
+	float outputs[testsSize] = { 0.f, 1.f, 4.f, 9.f, 16.f };
 	Interpolator<CompClass, float>* interpolator = ClampInterpolator<CompClass, float>::getInstance();
-	curve.initialize(interpolator, 5, inputs, outputs);
+	curve.initialize(interpolator, testsSize, inputs, outputs);
 	
-	check<CompClass, float>(-1.f,	0.f,	&curve);
-	check<CompClass, float>(0.f,	0.f,	&curve);
-	check<CompClass, float>(.125f,	0.f,	&curve);
-	check<CompClass, float>(.25f,	0.f,	&curve);
-	check<CompClass, float>(.5f,	0.f,	&curve);
-	check<CompClass, float>(1.f,	1.f,	&curve);
-	check<CompClass, float>(1.6f,	1.f,	&curve);
-	check<CompClass, float>(2.f,	4.f,	&curve);
-	check<CompClass, float>(3.f,	9.f,	&curve);
-	check<CompClass, float>(3.9f,	9.f,	&curve);
-	check<CompClass, float>(5.f,	16.f,	&curve);
-	check<CompClass, float>(20.f,	16.f,	&curve);
-	check<CompClass, float>(4.01f,	16.f,	&curve);
+	check<CompClass, float, testsSize>(-1.f,	0.f,	&curve);
+	check<CompClass, float, testsSize>(0.f,		0.f,	&curve);
+	check<CompClass, float, testsSize>(.125f,	0.f,	&curve);
+	check<CompClass, float, testsSize>(.25f,	0.f,	&curve);
+	check<CompClass, float, testsSize>(.5f,		0.f,	&curve);
+	check<CompClass, float, testsSize>(1.f,		1.f,	&curve);
+	check<CompClass, float, testsSize>(1.6f,	1.f,	&curve);
+	check<CompClass, float, testsSize>(2.f,		4.f,	&curve);
+	check<CompClass, float, testsSize>(3.f,		9.f,	&curve);
+	check<CompClass, float, testsSize>(3.9f,	9.f,	&curve);
+	check<CompClass, float, testsSize>(5.f,		16.f,	&curve);
+	check<CompClass, float, testsSize>(20.f,	16.f,	&curve);
+	check<CompClass, float, testsSize>(4.01f,	16.f,	&curve);
 }
 
 void testCompClassClampUp() {
 	ParamCurve<CompClass, float, testsSize> curve;
 	
-	CompClass inputs[5] = { CompClass(0.f), CompClass(1.f), CompClass(2.f), CompClass(3.f), CompClass(4.f) };
-	float outputs[5] = { 0.f, 1.f, 4.f, 9.f, 16.f };
+	CompClass inputs[testsSize] = { CompClass(0.f), CompClass(1.f), CompClass(2.f), CompClass(3.f), CompClass(4.f) };
+	float outputs[testsSize] = { 0.f, 1.f, 4.f, 9.f, 16.f };
 	Interpolator<CompClass, float>* interpolator = ClampUpInterpolator<CompClass, float>::getInstance();
-	curve.initialize(interpolator, 5, inputs, outputs);
+	curve.initialize(interpolator, testsSize, inputs, outputs);
 	
-	check<CompClass, float>(-1.f,	0.f,	&curve);
-	check<CompClass, float>(.0001f,	1.f,	&curve);
-	check<CompClass, float>(.125f,	1.f,	&curve);
-	check<CompClass, float>(.25f,	1.f,	&curve);
-	check<CompClass, float>(.5f,	1.f,	&curve);
-	check<CompClass, float>(1.f,	4.f,	&curve);
-	check<CompClass, float>(1.6f,	4.f,	&curve);
-	check<CompClass, float>(2.f,	9.f,	&curve);
-	check<CompClass, float>(3.f,	16.f,	&curve);
-	check<CompClass, float>(3.9f,	16.f,	&curve);
-	check<CompClass, float>(5.f,	16.f,	&curve);
-	check<CompClass, float>(20.f,	16.f,	&curve);
-	check<CompClass, float>(4.01f,	16.f,	&curve);
+	check<CompClass, float, testsSize>(-1.f,	0.f,	&curve);
+	check<CompClass, float, testsSize>(.0001f,	1.f,	&curve);
+	check<CompClass, float, testsSize>(.125f,	1.f,	&curve);
+	check<CompClass, float, testsSize>(.25f,	1.f,	&curve);
+	check<CompClass, float, testsSize>(.5f,		1.f,	&curve);
+	check<CompClass, float, testsSize>(1.f,		4.f,	&curve);
+	check<CompClass, float, testsSize>(1.6f,	4.f,	&curve);
+	check<CompClass, float, testsSize>(2.f,		9.f,	&curve);
+	check<CompClass, float, testsSize>(3.f,		16.f,	&curve);
+	check<CompClass, float, testsSize>(3.9f,	16.f,	&curve);
+	check<CompClass, float, testsSize>(5.f,		16.f,	&curve);
+	check<CompClass, float, testsSize>(20.f,	16.f,	&curve);
+	check<CompClass, float, testsSize>(4.01f,	16.f,	&curve);
 }
 
 void testCompClassLinear() {
 	ParamCurve<CompClass, float, testsSize> curve;
 	
-	CompClass inputs[5] = { CompClass(0.f), CompClass(1.f), CompClass(2.f), CompClass(3.f), CompClass(4.f) };
-	float outputs[5] = { 0.f, 1.f, 4.f, 9.f, 16.f };
+	CompClass inputs[testsSize] = { CompClass(0.f), CompClass(1.f), CompClass(2.f), CompClass(3.f), CompClass(4.f) };
+	float outputs[testsSize] = { 0.f, 1.f, 4.f, 9.f, 16.f };
 	Interpolator<CompClass, float>* interpolator = LinearInterpolator<CompClass, float>::getInstance();
-	curve.initialize(interpolator, 5, inputs, outputs);
+	curve.initialize(interpolator, testsSize, inputs, outputs);
 	
-	check<CompClass, float>(-1.f,	0.f,	&curve);
-	check<CompClass, float>(0.f,	0.f,	&curve);
-	check<CompClass, float>(.125f,	.125f,	&curve);
-	check<CompClass, float>(.25f,	.25f,	&curve);
-	check<CompClass, float>(.5f,	.5f,	&curve);
-	check<CompClass, float>(1.f,	1.f,	&curve);
-	check<CompClass, float>(1.6f,	2.8f,	&curve);
-	check<CompClass, float>(2.f,	4.f,	&curve);
-	check<CompClass, float>(3.f,	9.f,	&curve);
-	check<CompClass, float>(3.9f,	15.3f,	&curve);
-	check<CompClass, float>(5.f,	16.f,	&curve);
-	check<CompClass, float>(20.f,	16.f,	&curve);
-	check<CompClass, float>(4.01f,	16.f,	&curve);
+	check<CompClass, float, testsSize>(-1.f,	0.f,	&curve);
+	check<CompClass, float, testsSize>(0.f,		0.f,	&curve);
+	check<CompClass, float, testsSize>(.125f,	.125f,	&curve);
+	check<CompClass, float, testsSize>(.25f,	.25f,	&curve);
+	check<CompClass, float, testsSize>(.5f,		.5f,	&curve);
+	check<CompClass, float, testsSize>(1.f,		1.f,	&curve);
+	check<CompClass, float, testsSize>(1.6f,	2.8f,	&curve);
+	check<CompClass, float, testsSize>(2.f,		4.f,	&curve);
+	check<CompClass, float, testsSize>(3.f,		9.f,	&curve);
+	check<CompClass, float, testsSize>(3.9f,	15.3f,	&curve);
+	check<CompClass, float, testsSize>(5.f,		16.f,	&curve);
+	check<CompClass, float, testsSize>(20.f,	16.f,	&curve);
+	check<CompClass, float, testsSize>(4.01f,	16.f,	&curve);
 }
 
 class CatmullRomClass {
@@ -309,13 +311,42 @@ public:
 	operator float() { return value; }
 };
 
+void testCatmullRomFloat() {
+	ParamCurve<float, float, 4> curve;
+	
+	float inputs[4] = { 0.f, 1.f, 2.f, 3.f };
+	float outputs[4] = { 1.f, 2.f, 2.f, 1.f };
+	Interpolator<float, float>* interpolator = CatmullRomInterpolator<float, float>::getInstance();
+	curve.initialize(interpolator, 4, inputs, outputs);
+	
+	bool first = true;
+	for(float i = inputs[0] - .5f; i <= inputs[3] + .5f; i += .1f) {
+		if (first) first = false;
+		else printf(", ");
+		printf (" %f", i);
+	}
+
+	printf("\n");
+	first = true;
+	for(float i = inputs[0] - .5f; i <= inputs[3] + .5f; i += .1f) {
+		if (first) first = false;
+		else printf(", ");
+		printf (" %f", curve.getValue(i));
+	}
+
+	printf("\n");
+	////check<float, float, 4>( 1.25, 2.171875, &curve );
+	////check<float, float, 4>( 1.5, 2.125, &curve );
+	////check<float, float, 4>( 1.75, 2.171875, &curve );
+}
+
 void testCatmullRom() {
 	ParamCurve<float, CatmullRomClass, testsSize> curve;
 	
-	float inputs[5] = { 0.f, 1.f, 2.f, 3.f, 4.f };
-	CatmullRomClass outputs[5] = { CatmullRomClass(0.f), CatmullRomClass(1.f), CatmullRomClass(4.f), CatmullRomClass(9.f), CatmullRomClass(16.f) };
+	float inputs[testsSize] = { 0.f, 1.f, 2.f, 3.f, 4.f };
+	CatmullRomClass outputs[testsSize] = { CatmullRomClass(0.f), CatmullRomClass(1.f), CatmullRomClass(4.f), CatmullRomClass(9.f), CatmullRomClass(16.f) };
 	Interpolator<float, CatmullRomClass>* interpolator = CatmullRomInterpolator<float, CatmullRomClass>::getInstance();
-	curve.initialize(interpolator, 5, inputs, outputs);
+	curve.initialize(interpolator, testsSize, inputs, outputs);
 	
 	bool first = true;
 	for(float i = inputs[0]; i <= inputs[4]; i += .5f) {

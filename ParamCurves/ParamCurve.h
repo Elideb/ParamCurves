@@ -61,6 +61,9 @@ public:
 		}
 	}
 
+	TInput getLowestInput() const { return inputs[0]; }
+	TInput getHighestInput() const { return inputs[maxSize - 1]; }
+
 	TOutput getValue(TInput input) const {
 		return interpolator->interpolate(input, inputs, outputs, length);
 	}

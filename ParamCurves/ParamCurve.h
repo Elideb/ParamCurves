@@ -46,9 +46,18 @@ class ParamCurve {
 	TOutput outputs[maxSize];
 
 public:
-	// Creates a new instance of ParamCurve, with no elements.
+	///
+	/// Creates a new instance of ParamCurve, with no elements.
+	///
 	ParamCurve() : length(0) {}
 
+	///
+	/// Initialize the curve with the desired input and output values, plus the interpolator.
+	/// @param newInterpolator Interpolator desired to calculate values in subsequent calls.
+	/// @param newLength Number of input and output elements to store in the curve.
+	/// @param newInputs Values to use as source for value calculations.
+	/// @param newOutputs Values to interpolate between when calculating results.
+	///
 	void initialize(Interpolator<TInput, TOutput>* newInterpolator, size_t newLength, TInput* newInputs, TOutput* newOutputs) {
 		if (newLength >= maxSize) length = maxSize;
 		else length = newLength;
@@ -61,9 +70,30 @@ public:
 		}
 	}
 
-	TInput getLowestInput() const { return inputs[0]; }
-	TInput getHighestInput() const { return inputs[maxSize - 1]; }
+	///
+	/// Obtain the minimum input value in store.
+	/// @return First input value, if any; 0 if no input values.
+	///
+	TInput getLeftBound() const {
+		if (length == 0) return 0;
+		return inputs[0];
+	}
 
+	///
+	/// Obtain the maximum input value in store.
+	/// @return Last input value, if any; 0 if no input values.
+	///
+	TInput getRightBound() const {
+		if (length == 0) return 0;
+		return inputs[maxSize - 1];
+	}
+
+	///
+	/// Obtain the output value corresponding to the input received,
+	/// calculated using the selected interpolator.
+	/// @param input The value to calculate an output for.
+	/// @return The output matching the requested input and selected interpolator.
+	///
 	TOutput getValue(TInput input) const {
 		return interpolator->interpolate(input, inputs, outputs, length);
 	}
